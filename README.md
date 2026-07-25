@@ -32,6 +32,11 @@ Full docs: **[anything-engine/README.md](./anything-engine/README.md)**.
 
 - **[anything-engine/](./anything-engine/)** — the engine (sources, recipes,
   verified index, tests).
+- **[flow/](./flow/)** — push-to-talk dictation that replaces Wispr Flow:
+  hold a key, speak English/Hindi/Hinglish, and it types the result into the
+  frontmost app with human punctuation, choosing Devanagari vs romanized
+  Hinglish automatically from who you're talking to. ~$2/month in API costs
+  vs Wispr's $15.
 - **[builds/](./builds/)** — dossiers the engine has produced. The flagship is
   **[graphic-design-to-hardware](./builds/graphic-design-to-hardware/)**: take a
   2D design and build the machine that turns it into physical motion (pen
