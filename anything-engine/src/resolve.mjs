@@ -73,7 +73,12 @@ export async function resolve(capability, { limit = 5 } = {}) {
         return [];
       }
       try {
-        const r = await src.search(query, { limit, kinds, capability: capability.capability || null });
+        const r = await src.search(query, {
+          limit,
+          kinds,
+          capability: capability.capability || null,
+          domain: capability.domain || null,
+        });
         if (!r.ok) {
           notes.push(`${rid}: ${r.reason}`);
           return [];

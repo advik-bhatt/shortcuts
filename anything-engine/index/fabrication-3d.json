@@ -1,0 +1,200 @@
+{
+  "source": "verified open-source stack for 3D printing (model -> mesh -> slicer -> firmware -> host) plus a couple of real printers. Software is free; printer prices are 2026 ballparks.",
+  "components": [
+    {
+      "name": "OpenSCAD",
+      "kind": "software",
+      "what": "Script-driven parametric CAD; model solids in code and export STL. Alternative to CadQuery.",
+      "capability": "parametric CAD / 3D model authoring",
+      "keywords": [
+        "openscad",
+        "parametric",
+        "cad",
+        "model",
+        "stl",
+        "code"
+      ],
+      "source_url": "https://github.com/openscad/openscad",
+      "registry": "github",
+      "license": "GPL-2.0",
+      "popularity": 6800,
+      "verified": true
+    },
+    {
+      "name": "PrusaSlicer",
+      "kind": "software",
+      "what": "Mature slicer that turns an STL into printer G-code with rich profiles. Fork of Slic3r.",
+      "capability": "slicer (STL to printer G-code)",
+      "keywords": [
+        "prusaslicer",
+        "slicer",
+        "stl",
+        "gcode",
+        "slice",
+        "print"
+      ],
+      "source_url": "https://github.com/prusa3d/PrusaSlicer",
+      "registry": "github",
+      "license": "AGPL-3.0",
+      "popularity": 8600,
+      "verified": true
+    },
+    {
+      "name": "OrcaSlicer",
+      "kind": "software",
+      "what": "Popular PrusaSlicer/Bambu-Studio-derived slicer with strong calibration and multi-printer support.",
+      "capability": "slicer (STL to printer G-code)",
+      "keywords": [
+        "orcaslicer",
+        "slicer",
+        "stl",
+        "gcode",
+        "slice",
+        "print",
+        "calibration"
+      ],
+      "source_url": "https://github.com/SoftFever/OrcaSlicer",
+      "registry": "github",
+      "license": "GPL-3.0",
+      "popularity": 9500,
+      "verified": true
+    },
+    {
+      "name": "CuraEngine",
+      "kind": "software",
+      "what": "The open slicing engine behind Ultimaker Cura; STL to G-code, scriptable.",
+      "capability": "slicer (STL to printer G-code)",
+      "keywords": [
+        "curaengine",
+        "cura",
+        "slicer",
+        "stl",
+        "gcode",
+        "slice"
+      ],
+      "source_url": "https://github.com/Ultimaker/CuraEngine",
+      "registry": "github",
+      "license": "AGPL-3.0",
+      "popularity": 3600,
+      "verified": true
+    },
+    {
+      "name": "Klipper",
+      "kind": "firmware",
+      "what": "High-performance 3D-printer firmware that offloads motion planning to a host computer (Pi). Runs alongside Moonraker/Mainsail.",
+      "capability": "printer motion firmware",
+      "keywords": [
+        "klipper",
+        "firmware",
+        "printer",
+        "motion",
+        "host",
+        "moonraker"
+      ],
+      "source_url": "https://github.com/Klipper3d/klipper",
+      "registry": "github",
+      "license": "GPL-3.0",
+      "popularity": 9800,
+      "verified": true
+    },
+    {
+      "name": "Marlin",
+      "kind": "firmware",
+      "what": "The dominant 3D-printer firmware; runs on the printer's own controller board.",
+      "capability": "printer motion firmware",
+      "keywords": [
+        "marlin",
+        "firmware",
+        "printer",
+        "motion",
+        "gcode"
+      ],
+      "source_url": "https://github.com/MarlinFirmware/Marlin",
+      "registry": "github",
+      "license": "GPL-3.0",
+      "popularity": 16500,
+      "verified": true
+    },
+    {
+      "name": "OctoPrint",
+      "kind": "host-app",
+      "what": "The web print-host: upload, slice-adjacent control, monitor, and manage jobs over the network. pip-installable.",
+      "capability": "print host / job management",
+      "keywords": [
+        "octoprint",
+        "print",
+        "host",
+        "server",
+        "job",
+        "web",
+        "monitor"
+      ],
+      "source_url": "https://github.com/OctoPrint/OctoPrint",
+      "registry": "github",
+      "license": "AGPL-3.0",
+      "popularity": 8600,
+      "verified": true
+    },
+    {
+      "name": "Mainsail + Moonraker",
+      "kind": "host-app",
+      "what": "The web UI (Mainsail) + API server (Moonraker) that drive a Klipper printer from a Raspberry Pi.",
+      "capability": "print host / job management",
+      "keywords": [
+        "mainsail",
+        "moonraker",
+        "klipper",
+        "host",
+        "web",
+        "ui",
+        "print"
+      ],
+      "source_url": "https://github.com/mainsail-crew/mainsail",
+      "registry": "github",
+      "license": "GPL-3.0",
+      "popularity": 2400,
+      "verified": true
+    },
+    {
+      "name": "Bambu Lab A1 mini (FDM printer)",
+      "kind": "part",
+      "what": "A cheap, fast, well-calibrated FDM printer to actually print the sliced G-code. Cheapest reliable entry point.",
+      "capability": "the printer (FDM hardware)",
+      "keywords": [
+        "bambu",
+        "a1",
+        "mini",
+        "fdm",
+        "printer",
+        "hardware",
+        "machine"
+      ],
+      "source_url": "https://us.store.bambulab.com/products/a1-mini",
+      "registry": "vendor",
+      "price_usd": 199,
+      "qty": 1,
+      "verified": true
+    },
+    {
+      "name": "Creality Ender 3 V3 (FDM printer)",
+      "kind": "part",
+      "what": "The classic hackable budget FDM printer; huge community, Klipper/Marlin friendly. Alternative to the A1 mini.",
+      "capability": "the printer (FDM hardware)",
+      "keywords": [
+        "creality",
+        "ender",
+        "3",
+        "fdm",
+        "printer",
+        "hardware",
+        "machine"
+      ],
+      "source_url": "https://www.creality.com/products/ender-3-v3-3d-printer",
+      "registry": "vendor",
+      "price_usd": 199,
+      "qty": 0,
+      "verified": true
+    }
+  ],
+  "domain": "additive manufacturing"
+}

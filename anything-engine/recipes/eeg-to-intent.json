@@ -1,0 +1,17 @@
+{
+  "goal": "eeg to intent (brain signal input)",
+  "aliases": ["brain waves to creation", "eeg brain computer interface", "read brain signal into a command", "bci intent decoding", "think it into the engine", "brain to build"],
+  "domain": "brain-computer interface",
+  "summary": "The roadmap front door for the engine: turn brain signal into a decoded intent that can drive a build. Real, existing pieces already cover the whole chain: open EEG hardware, a unified streaming SDK, and ML that classifies the signal into an intent. That intent string then becomes the goal you hand to anything-engine, so thinking becomes the input to the search for how to build.",
+  "capabilities": [
+    { "capability": "brain signal acquisition (EEG hardware)", "query": "eeg headset openbci muse brain signal", "registries": "vendor,index", "kinds": ["part"], "example": "OpenBCI Ganglion / Muse 2" },
+    { "capability": "EEG data streaming (acquisition SDK)", "query": "brainflow eeg streaming lsl acquisition", "registries": "pypi,github,index", "kinds": ["input-source", "software"], "example": "BrainFlow" },
+    { "capability": "intent decoding (ML classification)", "query": "mne eeg intent classification machine learning", "registries": "pypi,github,index", "kinds": ["input-source", "software"], "example": "MNE + a classifier (BrainPad)" }
+  ],
+  "build_steps": [
+    { "title": "Put on the headset and stream", "detail": "Acquire raw EEG from an OpenBCI board (open hardware) or a Muse 2, and stream it with BrainFlow (one SDK across boards) or muse-lsl over Lab Streaming Layer.", "uses": ["brain signal acquisition (EEG hardware)", "EEG data streaming (acquisition SDK)"] },
+    { "title": "Decode an intent", "detail": "Filter and window the signal (MNE), train a classifier (e.g. motor-imagery or SSVEP targets) to map brain states to a small vocabulary of intents. BrainPad is a worked example of the pipeline.", "uses": ["intent decoding (ML classification)"] },
+    { "title": "Hand the intent to the engine", "detail": "Map the decoded intent to a goal string and run it through anything-engine: `node cli.mjs \"<decoded goal>\"`. The search for how to build it runs itself. This is the loop the whole project points at: think it, and the components to build it assemble.", "uses": ["intent decoding (ML classification)"] }
+  ],
+  "safety": "Consumer EEG is non-invasive and low-risk, but it is sensitive personal biometric data. Keep raw brain data local and consented; never stream it to a third party by default. This is a research/maker pipeline, not a medical device."
+}

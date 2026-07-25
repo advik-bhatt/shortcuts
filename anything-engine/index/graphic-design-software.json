@@ -1,0 +1,328 @@
+{
+  "source": "verified open-source software for graphic-design->hardware (design->toolpath, firmware, host).",
+  "components": [
+    {
+      "name": "svg2gcode",
+      "kind": "software",
+      "what": "Rust library and CLI that converts SVG vector graphics into G-code for pen plotters, laser engravers, and other CNC machines.",
+      "capability": "design to toolpath (SVG/raster to G-code)",
+      "keywords": [
+        "svg2gcode",
+        "svg",
+        "gcode",
+        "toolpath",
+        "convert"
+      ],
+      "source_url": "https://crates.io/crates/svg2gcode",
+      "registry": "crates.io",
+      "license": "MIT",
+      "popularity": 0,
+      "verified": true
+    },
+    {
+      "name": "vpype",
+      "kind": "software",
+      "what": "Python command-line \"Swiss Army knife\" that reads/optimizes SVG vector artwork (line sorting, layout, occlusion, generative ops) as the pipeline stage before G-code output.",
+      "capability": "design to toolpath (SVG/raster to G-code)",
+      "keywords": [
+        "vpype",
+        "svg",
+        "gcode",
+        "toolpath",
+        "convert"
+      ],
+      "source_url": "https://pypi.org/project/vpype/",
+      "registry": "pypi",
+      "license": "MIT",
+      "popularity": 0,
+      "verified": true
+    },
+    {
+      "name": "vpype-gcode",
+      "kind": "software",
+      "what": "vpype plugin that writes G-code (and other configurable ASCII toolpath formats) from the processed vector geometry via customizable output profiles.",
+      "capability": "design to toolpath (SVG/raster to G-code)",
+      "keywords": [
+        "vpype",
+        "gcode",
+        "svg",
+        "toolpath",
+        "convert"
+      ],
+      "source_url": "https://pypi.org/project/vpype-gcode/",
+      "registry": "pypi",
+      "license": "MIT",
+      "popularity": 0,
+      "verified": true
+    },
+    {
+      "name": "juicy-gcode",
+      "kind": "software",
+      "what": "Haskell command-line tool that converts SVG into optimized G-code, notable for biarc curve fitting (as well as linear and cubic-bezier approximation) for smooth plotter/CNC toolpaths.",
+      "capability": "design to toolpath (SVG/raster to G-code)",
+      "keywords": [
+        "juicy",
+        "gcode",
+        "svg",
+        "toolpath",
+        "convert"
+      ],
+      "source_url": "https://github.com/domoszlai/juicy-gcode",
+      "registry": "github",
+      "license": "MIT",
+      "popularity": 0,
+      "verified": true
+    },
+    {
+      "name": "gcodetools (Inkscape extension)",
+      "kind": "software",
+      "what": "CAM extension for Inkscape that exports drawn/selected paths to G-code (area fill, engraving, lathe, tool libraries), converting an SVG design directly into CNC toolpaths from inside the editor.",
+      "capability": "design to toolpath (SVG/raster to G-code)",
+      "keywords": [
+        "gcodetools",
+        "inkscape",
+        "extension",
+        "svg",
+        "gcode",
+        "toolpath",
+        "convert"
+      ],
+      "source_url": "https://github.com/cnc-club/gcodetools",
+      "registry": "github",
+      "license": "GPL-2.0-or-later",
+      "popularity": 0,
+      "verified": true
+    },
+    {
+      "name": "LinuxCNC image-to-gcode (image2gcode)",
+      "kind": "software",
+      "what": "Standalone Python filter bundled with LinuxCNC that turns a greyscale raster image into a Z-depth map and generates 2.5D milling G-code (brightness = cut depth), with roughing-pass support.",
+      "capability": "design to toolpath (SVG/raster to G-code)",
+      "keywords": [
+        "linuxcnc",
+        "image",
+        "gcode",
+        "image2gcode",
+        "svg",
+        "toolpath",
+        "convert"
+      ],
+      "source_url": "https://github.com/LinuxCNC/linuxcnc",
+      "registry": "github",
+      "license": "GPL-2.0",
+      "popularity": 0,
+      "verified": true
+    },
+    {
+      "name": "LaserGRBL",
+      "kind": "software",
+      "what": "Actively maintained Windows GUI for GRBL controllers that imports raster images (JPG/BMP/PNG) and vectors, generates laser G-code line-by-line (dithering/grayscale/vectorize), then streams it to the machine.",
+      "capability": "design to toolpath (SVG/raster to G-code)",
+      "keywords": [
+        "lasergrbl",
+        "svg",
+        "gcode",
+        "toolpath",
+        "convert"
+      ],
+      "source_url": "https://github.com/arkypita/LaserGRBL",
+      "registry": "github",
+      "license": "GPLv3",
+      "popularity": 0,
+      "verified": true
+    },
+    {
+      "name": "GRBL",
+      "kind": "firmware",
+      "what": "The classic open-source G-code parser and CNC motion controller written in optimized C, generating up to 30 kHz jitter-free step pulses with look-ahead acceleration.",
+      "capability": "motion-controller firmware (runs G-code, drives steppers)",
+      "keywords": [
+        "grbl",
+        "gcode",
+        "controller",
+        "firmware",
+        "stepper"
+      ],
+      "source_url": "https://github.com/gnea/grbl",
+      "registry": "github",
+      "license": "GPL-3.0",
+      "popularity": 0,
+      "verified": true
+    },
+    {
+      "name": "grblHAL",
+      "kind": "firmware",
+      "what": "A hardware-abstraction-layer rewrite of grbl 1.1f that runs the same core on 32-bit MCUs with a plugin architecture, driven by separate per-chip driver repos.",
+      "capability": "motion-controller firmware (runs G-code, drives steppers)",
+      "keywords": [
+        "grblhal",
+        "grbl",
+        "gcode",
+        "controller",
+        "firmware",
+        "stepper"
+      ],
+      "source_url": "https://github.com/grblHAL/core",
+      "registry": "github",
+      "license": "GPL-3.0",
+      "popularity": 0,
+      "verified": true
+    },
+    {
+      "name": "FluidNC",
+      "kind": "firmware",
+      "what": "The next-generation ESP32 CNC firmware from the grbl/grblESP32 lineage, configured via runtime YAML (no recompile) with a built-in WiFi web UI.",
+      "capability": "motion-controller firmware (runs G-code, drives steppers)",
+      "keywords": [
+        "fluidnc",
+        "grbl",
+        "gcode",
+        "controller",
+        "firmware",
+        "stepper"
+      ],
+      "source_url": "https://github.com/bdring/FluidNC",
+      "registry": "github",
+      "license": "GPL-3.0",
+      "popularity": 0,
+      "verified": true
+    },
+    {
+      "name": "Marlin",
+      "kind": "firmware",
+      "what": "The dominant open-source RepRap 3D-printer firmware for 8- and 32-bit MCUs, which also ships built-in laser and CNC spindle (G-code) control for those machine types.",
+      "capability": "motion-controller firmware (runs G-code, drives steppers)",
+      "keywords": [
+        "marlin",
+        "grbl",
+        "gcode",
+        "controller",
+        "firmware",
+        "stepper"
+      ],
+      "source_url": "https://github.com/MarlinFirmware/Marlin",
+      "registry": "github",
+      "license": "GPL-3.0",
+      "popularity": 0,
+      "verified": true
+    },
+    {
+      "name": "Universal Gcode Sender (UGS)",
+      "kind": "host-app",
+      "what": "Java-based cross-platform G-code sender for GRBL/FluidNC (plus TinyG, g2core, Smoothieware) with a dedicated jog controller panel, DRO, and 3D visualizer.",
+      "capability": "host / G-code sender (streams G-code over USB)",
+      "keywords": [
+        "universal",
+        "gcode",
+        "sender",
+        "ugs",
+        "host",
+        "stream",
+        "jog",
+        "usb"
+      ],
+      "source_url": "https://github.com/winder/Universal-G-Code-Sender",
+      "registry": "github",
+      "license": "GPL-3.0",
+      "popularity": 0,
+      "verified": true
+    },
+    {
+      "name": "bCNC",
+      "kind": "host-app",
+      "what": "Advanced Python/Tkinter G-code sender for GRBL/grblHAL with jogging, auto-leveling (probe height map), a G-code editor, and CAM tools, runs well on low-power hardware like Raspberry Pi.",
+      "capability": "host / G-code sender (streams G-code over USB)",
+      "keywords": [
+        "bcnc",
+        "gcode",
+        "sender",
+        "host",
+        "stream",
+        "jog",
+        "usb"
+      ],
+      "source_url": "https://github.com/vlachoudis/bCNC",
+      "registry": "github",
+      "license": "GPL-2.0",
+      "popularity": 0,
+      "verified": true
+    },
+    {
+      "name": "CNCjs",
+      "kind": "host-app",
+      "what": "Node.js web-based CNC controller/G-code sender for GRBL, Marlin, Smoothieware, and TinyG, with a browser jog UI, 6-axis DRO, keyboard shortcuts, pendant support, and 3D toolpath view.",
+      "capability": "host / G-code sender (streams G-code over USB)",
+      "keywords": [
+        "cncjs",
+        "gcode",
+        "sender",
+        "host",
+        "stream",
+        "jog",
+        "usb"
+      ],
+      "source_url": "https://github.com/cncjs/cncjs",
+      "registry": "github",
+      "license": "MIT",
+      "popularity": 0,
+      "verified": true
+    },
+    {
+      "name": "OpenBuilds CONTROL",
+      "kind": "host-app",
+      "what": "Electron-based GRBL host/interface and G-code sender for CNC machines (GRBL and GRBL-compatible like FluidNC) with jogging, probing wizards, and job streaming.",
+      "capability": "host / G-code sender (streams G-code over USB)",
+      "keywords": [
+        "openbuilds",
+        "control",
+        "gcode",
+        "sender",
+        "host",
+        "stream",
+        "jog",
+        "usb"
+      ],
+      "source_url": "https://github.com/OpenBuilds/OpenBuilds-CONTROL",
+      "registry": "github",
+      "license": "GPL-3.0",
+      "popularity": 0,
+      "verified": true
+    },
+    {
+      "name": "GRBL firmware",
+      "kind": "firmware",
+      "what": "Option A motion-control firmware flashed onto the Uno; parses G-code and does the real-time step-pulse generation for both axes.",
+      "capability": "motion-controller firmware (runs G-code, drives steppers)",
+      "keywords": [
+        "grbl",
+        "firmware",
+        "gcode",
+        "controller"
+      ],
+      "source_url": "https://github.com/grbl/grbl",
+      "registry": "github",
+      "license": "GPLv3 (v0.9+; pre-0.9 releases were MIT)",
+      "popularity": 0,
+      "verified": true
+    },
+    {
+      "name": "FluidNC firmware",
+      "kind": "firmware",
+      "what": "Option B GRBL-compatible motion firmware for the ESP32; adds WiFi control, an SD-card config file, and native multi-driver (TMC2209 UART) support.",
+      "capability": "motion-controller firmware (runs G-code, drives steppers)",
+      "keywords": [
+        "fluidnc",
+        "firmware",
+        "grbl",
+        "gcode",
+        "controller"
+      ],
+      "source_url": "https://github.com/bdring/FluidNC",
+      "registry": "github",
+      "license": "GPLv3",
+      "popularity": 0,
+      "verified": true
+    }
+  ],
+  "domain": "digital fabrication"
+}

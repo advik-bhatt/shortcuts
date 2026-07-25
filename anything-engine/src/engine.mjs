@@ -21,7 +21,11 @@ export async function plan(goal, { perCapability = 4, expandTop = true, expandDe
   const missing = [];
 
   for (const cap of decomposition.capabilities) {
-    const resolved = await resolve(cap, { limit: perCapability });
+    // A parts-only stage needs EVERY required part in the BOM, not a top-N
+    // shortlist (you don't pick one motor OR one belt — you order all of them).
+    // Software stages stay shortlisted: you choose one tool for the job.
+    const partsOnly = Array.isArray(cap.kinds) && cap.kinds.length === 1 && cap.kinds[0] === 'part';
+    const resolved = await resolve(cap, { limit: partsOnly ? 100 : perCapability });
     let graph = null;
 
     // Expand the dependency tree of the single best SOFTWARE pick, to make the

@@ -18,11 +18,11 @@ Matched recipe **graphic design to hardware** (`graphic-design-to-hardware.json`
 
 | Stage | Capability | Top pick | Source |
 | --- | --- | --- | --- |
-| design to toolpath (SVG/raster to G-code) | svg to gcode | juicy-gcode | github |
-| motion-controller firmware (runs G-code, drives steppers) | grbl gcode controller firmware | grbl | github |
+| design to toolpath (SVG/raster to G-code) | svg to gcode | svg2gcode | crates |
+| motion-controller firmware (runs G-code, drives steppers) | grbl gcode controller firmware | GRBL | github |
 | host / G-code sender (streams G-code over USB) | gcode sender host jog | Universal Gcode Sender (UGS) | github |
-| electronics (controller board, stepper drivers, power) | arduino cnc shield a4988 stepper driver power supply usb | CNC Shield V3 (GRBL-compatible) | index |
-| motion + frame (steppers, belts, linear motion, structure) | nema17 stepper gt2 belt linear rod rail extrusion frame | GT2 timing belt + 20T pulleys + idlers kit | index |
-| tool head + sensors (pen lift or laser, endstops) | servo pen lift diode laser module endstop limit switch | SG90 / MG90S micro servo (pen lift) | index |
+| electronics (controller board, stepper drivers, power) | arduino cnc shield a4988 stepper driver power supply usb | A4988 stepper driver module (StepStick) | vendor |
+| motion + frame (steppers, belts, linear motion, structure) | nema17 stepper gt2 belt linear rod rail extrusion frame | NEMA 17 bipolar stepper motor (42x42mm, ~1.5A, ~42Ncm) | vendor |
+| tool head + sensors (pen lift or laser, endstops) | servo pen lift diode laser module endstop limit switch | 5W 450nm diode laser module, 12V PWM/TTL (optional laser tool head) | vendor |
 
-**Estimated parts total: $130.00** (10 line items). Software is free/open-source.
+**Estimated parts total: $271.22** (18 line items). Software is free/open-source.

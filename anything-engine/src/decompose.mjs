@@ -68,7 +68,9 @@ export function decompose(goal, { recipes = loadRecipes() } = {}) {
       recipe_file: best._file,
       domain: best.domain || '',
       match_score: bestScore,
-      capabilities: best.capabilities,
+      // Stamp the recipe's domain onto every capability so the resolver can
+      // scope the index to this build's domain.
+      capabilities: best.capabilities.map((c) => ({ domain: best.domain || '', ...c })),
     };
   }
 

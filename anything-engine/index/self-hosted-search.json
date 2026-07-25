@@ -1,0 +1,108 @@
+{
+  "source": "verified open-source stack for a private self-hosted search engine (meta-search UI + crawler + extraction + full-text index + client). All free/OSS.",
+  "components": [
+    {
+      "name": "SearXNG",
+      "kind": "software",
+      "what": "Privacy-respecting meta-search engine: aggregates results from 200+ existing engines behind one self-hosted UI, no tracking.",
+      "capability": "meta-search front-end (aggregate existing engines, privacy proxy)",
+      "keywords": [
+        "searxng",
+        "metasearch",
+        "meta",
+        "search",
+        "privacy",
+        "self-hosted",
+        "aggregate"
+      ],
+      "source_url": "https://github.com/searxng/searxng",
+      "registry": "github",
+      "license": "AGPL-3.0",
+      "popularity": 13000,
+      "verified": true
+    },
+    {
+      "name": "Crawlee",
+      "kind": "software",
+      "what": "Node/TS crawling + scraping framework (Playwright/Cheerio) for building your own index. Python port also exists.",
+      "capability": "web crawler / scraper (build your own index)",
+      "keywords": [
+        "crawlee",
+        "crawler",
+        "scraper",
+        "scraping",
+        "index",
+        "playwright",
+        "apify"
+      ],
+      "source_url": "https://github.com/apify/crawlee",
+      "registry": "github",
+      "license": "Apache-2.0",
+      "popularity": 15000,
+      "verified": true
+    },
+    {
+      "name": "Meilisearch",
+      "kind": "software",
+      "what": "Fast, typo-tolerant full-text search engine (Rust). Self-hosted, simple API; the index behind your search.",
+      "capability": "full-text search index engine",
+      "keywords": [
+        "meilisearch",
+        "full",
+        "text",
+        "search",
+        "index",
+        "engine",
+        "rust",
+        "typo"
+      ],
+      "source_url": "https://github.com/meilisearch/meilisearch",
+      "registry": "github",
+      "license": "MIT",
+      "popularity": 47000,
+      "verified": true
+    },
+    {
+      "name": "Typesense",
+      "kind": "software",
+      "what": "Open-source typo-tolerant search engine, a lean Algolia/Elasticsearch alternative. Alternative index.",
+      "capability": "full-text search index engine",
+      "keywords": [
+        "typesense",
+        "search",
+        "index",
+        "engine",
+        "full",
+        "text",
+        "algolia"
+      ],
+      "source_url": "https://github.com/typesense/typesense",
+      "registry": "github",
+      "license": "GPL-3.0",
+      "popularity": 21000,
+      "verified": true
+    },
+    {
+      "name": "OpenSearch",
+      "kind": "software",
+      "what": "Apache-2.0 fork of Elasticsearch for larger self-hosted full-text + analytics workloads.",
+      "capability": "full-text search index engine",
+      "keywords": [
+        "opensearch",
+        "elasticsearch",
+        "search",
+        "index",
+        "engine",
+        "full",
+        "text",
+        "analytics"
+      ],
+      "source_url": "https://github.com/opensearch-project/OpenSearch",
+      "registry": "github",
+      "license": "Apache-2.0",
+      "popularity": 10000,
+      "verified": true
+    }
+  ],
+  "domain": "information retrieval"
+}

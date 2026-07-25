@@ -1,0 +1,170 @@
+{
+  "source": "verified stack for a networked home air-quality monitor (sensors + MCU firmware + drivers + messaging + dashboard). Software is free/OSS; sensor prices are 2026 ballparks.",
+  "components": [
+    {
+      "name": "ESPHome",
+      "kind": "software",
+      "what": "Describe an ESP32 sensor node in YAML; it compiles firmware and integrates straight into Home Assistant. No C required.",
+      "capability": "microcontroller firmware platform",
+      "keywords": [
+        "esphome",
+        "esp32",
+        "firmware",
+        "yaml",
+        "sensor",
+        "platform",
+        "mcu"
+      ],
+      "source_url": "https://github.com/esphome/esphome",
+      "registry": "github",
+      "license": "MIT",
+      "popularity": 8600,
+      "verified": true
+    },
+    {
+      "name": "Eclipse Mosquitto (MQTT broker)",
+      "kind": "software",
+      "what": "The lightweight MQTT message broker the sensor node publishes telemetry to.",
+      "capability": "messaging transport (telemetry)",
+      "keywords": [
+        "mosquitto",
+        "mqtt",
+        "broker",
+        "messaging",
+        "telemetry",
+        "eclipse",
+        "transport"
+      ],
+      "source_url": "https://github.com/eclipse/mosquitto",
+      "registry": "github",
+      "license": "EPL-2.0",
+      "popularity": 9200,
+      "verified": true
+    },
+    {
+      "name": "Home Assistant",
+      "kind": "software",
+      "what": "Self-hosted home-automation hub with dashboards, history, and alerts; ingests the air-quality readings. pip-installable.",
+      "capability": "dashboard / storage / home automation",
+      "keywords": [
+        "home",
+        "assistant",
+        "homeassistant",
+        "dashboard",
+        "automation",
+        "storage",
+        "hub"
+      ],
+      "source_url": "https://github.com/home-assistant/core",
+      "registry": "github",
+      "license": "Apache-2.0",
+      "popularity": 76000,
+      "verified": true
+    },
+    {
+      "name": "Grafana + InfluxDB",
+      "kind": "software",
+      "what": "Time-series database (InfluxDB) + dashboards (Grafana); a metrics-first alternative to Home Assistant for charts.",
+      "capability": "dashboard / storage / home automation",
+      "keywords": [
+        "grafana",
+        "influxdb",
+        "dashboard",
+        "timeseries",
+        "metrics",
+        "storage",
+        "charts"
+      ],
+      "source_url": "https://github.com/grafana/grafana",
+      "registry": "github",
+      "license": "AGPL-3.0",
+      "popularity": 66000,
+      "verified": true
+    },
+    {
+      "name": "Sensirion SEN55 (PM/VOC/NOx/RH/T sensor)",
+      "kind": "part",
+      "what": "All-in-one environmental sensor: particulate matter, VOC, NOx, humidity, and temperature over I2C.",
+      "capability": "air-quality sensor hardware (PM / CO2 / VOC)",
+      "keywords": [
+        "sensirion",
+        "sen55",
+        "pm2.5",
+        "pm",
+        "voc",
+        "nox",
+        "sensor",
+        "air",
+        "quality"
+      ],
+      "source_url": "https://www.adafruit.com/product/5522",
+      "registry": "vendor",
+      "price_usd": 45,
+      "qty": 1,
+      "verified": true
+    },
+    {
+      "name": "Sensirion SCD41 (true CO2 sensor)",
+      "kind": "part",
+      "what": "Photoacoustic NDIR true-CO2 sensor over I2C; the CO2 half of the monitor.",
+      "capability": "air-quality sensor hardware (PM / CO2 / VOC)",
+      "keywords": [
+        "sensirion",
+        "scd41",
+        "co2",
+        "carbon",
+        "dioxide",
+        "sensor",
+        "air",
+        "quality"
+      ],
+      "source_url": "https://www.adafruit.com/product/5190",
+      "registry": "vendor",
+      "price_usd": 23,
+      "qty": 1,
+      "verified": true
+    },
+    {
+      "name": "Plantower PMS5003 (particulate sensor)",
+      "kind": "part",
+      "what": "Cheap, proven laser particulate (PM1/2.5/10) sensor; a budget alternative to the SEN55.",
+      "capability": "air-quality sensor hardware (PM / CO2 / VOC)",
+      "keywords": [
+        "plantower",
+        "pms5003",
+        "pm2.5",
+        "particulate",
+        "laser",
+        "sensor",
+        "air",
+        "quality"
+      ],
+      "source_url": "https://www.adafruit.com/product/3686",
+      "registry": "vendor",
+      "price_usd": 15,
+      "qty": 0,
+      "verified": true
+    },
+    {
+      "name": "ESP32 dev board (WROOM/S3)",
+      "kind": "part",
+      "what": "The Wi-Fi microcontroller that reads the sensors and runs ESPHome.",
+      "capability": "the microcontroller (ESP32 board)",
+      "keywords": [
+        "esp32",
+        "board",
+        "wroom",
+        "s3",
+        "microcontroller",
+        "mcu",
+        "wifi"
+      ],
+      "source_url": "https://www.adafruit.com/product/3405",
+      "registry": "vendor",
+      "price_usd": 10,
+      "qty": 1,
+      "verified": true
+    }
+  ],
+  "domain": "IoT / environmental sensing"
+}

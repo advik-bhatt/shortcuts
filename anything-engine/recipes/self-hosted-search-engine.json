@@ -1,0 +1,20 @@
+{
+  "goal": "self-hosted web search engine",
+  "aliases": ["private search engine", "build my own search engine", "self hosted metasearch", "run my own google", "index the web myself", "searxng meilisearch stack"],
+  "domain": "information retrieval",
+  "summary": "Stand up a private search engine you own: a meta-search UI that aggregates existing engines with no tracking, plus your own crawl-extract-index pipeline for the corpora you care about. All five layers are real, deployable open-source projects.",
+  "capabilities": [
+    { "capability": "meta-search front-end (aggregate existing engines, privacy proxy)", "query": "searxng metasearch privacy self-hosted", "registries": "github,index", "kinds": ["software"], "example": "SearXNG" },
+    { "capability": "web crawler / scraper (build your own index)", "query": "scrapy web crawler scraping", "registries": "pypi,npm,github,index", "kinds": ["software"], "example": "Scrapy" },
+    { "capability": "HTML main-content extraction", "query": "trafilatura html article main content extraction", "registries": "pypi,index", "kinds": ["software"], "example": "trafilatura" },
+    { "capability": "full-text search index engine", "query": "meilisearch full text search engine self hosted", "registries": "crates,github,index", "kinds": ["software"], "example": "Meilisearch" },
+    { "capability": "search index client / query API", "query": "meilisearch client sdk", "registries": "pypi,npm,index", "kinds": ["software"], "example": "meilisearch client" }
+  ],
+  "build_steps": [
+    { "title": "Stand up the meta-search UI", "detail": "Deploy SearXNG (Docker) for instant privacy-respecting search across 200+ engines, no crawling required. This alone is a usable private search engine.", "uses": ["meta-search front-end (aggregate existing engines, privacy proxy)"] },
+    { "title": "Crawl the corpora you want to own", "detail": "Point Scrapy (or Crawlee) at the sites/domains you want your own index of, respecting robots.txt and rate limits.", "uses": ["web crawler / scraper (build your own index)"] },
+    { "title": "Extract clean text", "detail": "Run each fetched page through trafilatura to strip nav/boilerplate down to main content + metadata worth indexing.", "uses": ["HTML main-content extraction"] },
+    { "title": "Index it", "detail": "Push the extracted documents into Meilisearch (or Typesense) for fast, typo-tolerant full-text search.", "uses": ["full-text search index engine"] },
+    { "title": "Query from your app", "detail": "Use the Meilisearch client (Python or JS) to search your index from a UI or API, or wire it as a SearXNG engine so both live behind one box.", "uses": ["search index client / query API"] }
+  ]
+}

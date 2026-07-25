@@ -1,0 +1,20 @@
+{
+  "goal": "home air quality monitor",
+  "aliases": ["air quality sensor with dashboard", "co2 pm2.5 monitor", "networked air monitor", "iot environment monitor", "esp32 air quality", "indoor air quality tracker"],
+  "domain": "IoT / environmental sensing",
+  "summary": "Build a networked monitor that reads particulates, CO2, and VOCs and shows them on a live dashboard: a sensor on an ESP32, firmware you describe in YAML, a driver library, an MQTT transport, and a self-hosted dashboard. Software is free/OSS; the sensors are cheap and orderable.",
+  "capabilities": [
+    { "capability": "air-quality sensor hardware (PM / CO2 / VOC)", "query": "pm2.5 co2 voc air quality sensor sen55 scd41", "registries": "vendor,index", "kinds": ["part"], "example": "Sensirion SEN55 + SCD41" },
+    { "capability": "the microcontroller (ESP32 board)", "query": "esp32 board wifi microcontroller", "registries": "vendor,index", "kinds": ["part"], "example": "ESP32 dev board" },
+    { "capability": "microcontroller firmware platform", "query": "esphome esp32 sensor firmware", "registries": "pypi,github,index", "kinds": ["software"], "example": "ESPHome" },
+    { "capability": "sensor driver library", "query": "adafruit circuitpython pm25 air quality sensor driver", "registries": "pypi,github,index", "kinds": ["software"], "example": "adafruit-circuitpython-pm25" },
+    { "capability": "messaging transport (telemetry)", "query": "paho mqtt broker mosquitto client", "registries": "pypi,github,index", "kinds": ["software"], "example": "paho-mqtt + Mosquitto" },
+    { "capability": "dashboard / storage / home automation", "query": "home assistant grafana influxdb dashboard", "registries": "pypi,github,index", "kinds": ["software"], "example": "Home Assistant" }
+  ],
+  "build_steps": [
+    { "title": "Wire the sensor to the ESP32", "detail": "Connect the SEN55 (and/or SCD41) to the ESP32 over I2C (SDA/SCL + 3V3 + GND). Confirm the wiring against the board pinout.", "uses": ["air-quality sensor hardware (PM / CO2 / VOC)", "the microcontroller (ESP32 board)"] },
+    { "title": "Flash firmware", "detail": "Describe the node in an ESPHome YAML (board + the SEN55/SCD41 sensor component + Wi-Fi), then compile and flash. No C to write. (CircuitPython + the Adafruit driver is the alternative.)", "uses": ["microcontroller firmware platform", "sensor driver library"] },
+    { "title": "Publish telemetry", "detail": "Have the node publish readings over MQTT to a Mosquitto broker (ESPHome can also talk to Home Assistant directly).", "uses": ["messaging transport (telemetry)"] },
+    { "title": "Show it on a dashboard", "detail": "Ingest into Home Assistant for cards + history + alerts, or into InfluxDB + Grafana for charts. Set an alert when CO2 or PM2.5 crosses a threshold.", "uses": ["dashboard / storage / home automation"] }
+  ]
+}

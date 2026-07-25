@@ -13,9 +13,14 @@ function candidates(query) {
   const q = query.trim();
   const out = new Set([q, q.toLowerCase()]);
   if (/\s/.test(q)) {
-    out.add(q.replace(/\s+/g, '-').toLowerCase());
-    out.add(q.replace(/\s+/g, '').toLowerCase());
-    out.add(q.split(/\s+/).pop().toLowerCase());
+    const words = q.toLowerCase().split(/\s+/);
+    // Recipe queries lead with the likely package name ("cadquery parametric
+    // cad ..."), so try the first words first, then joined forms, then the last.
+    out.add(words[0]);
+    if (words.length > 1) out.add(`${words[0]}-${words[1]}`);
+    out.add(words.join('-'));
+    out.add(words.join(''));
+    out.add(words[words.length - 1]);
   }
   return [...out];
 }

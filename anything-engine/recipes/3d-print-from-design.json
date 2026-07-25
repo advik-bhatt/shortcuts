@@ -1,0 +1,22 @@
+{
+  "goal": "3d print a model from a design",
+  "aliases": ["3d print an object", "model to printed part", "stl to physical print", "print a 3d model", "additive manufacturing from a design", "cad to 3d print"],
+  "domain": "additive manufacturing",
+  "summary": "Go from an idea to a printed physical object: author or repair a 3D model, slice it into printer G-code, run open firmware on the printer, and drive the job from a print host. Every stage is a real, existing open-source project; the only thing to buy is the printer.",
+  "capabilities": [
+    { "capability": "parametric CAD / 3D model authoring", "query": "cadquery parametric cad python model stl", "registries": "pypi,github", "kinds": ["software"], "example": "CadQuery" },
+    { "capability": "mesh repair / processing (watertight STL cleanup)", "query": "trimesh 3d mesh processing repair", "registries": "pypi,github", "kinds": ["software"], "example": "trimesh" },
+    { "capability": "slicer (STL to printer G-code)", "query": "prusaslicer orcaslicer slicer stl gcode", "registries": "github,index", "kinds": ["software"], "example": "PrusaSlicer" },
+    { "capability": "printer motion firmware", "query": "klipper marlin printer firmware", "registries": "github,index", "kinds": ["firmware", "software"], "example": "Klipper" },
+    { "capability": "print host / job management", "query": "octoprint print host server job", "registries": "pypi,github,index", "kinds": ["host-app", "software"], "example": "OctoPrint" },
+    { "capability": "the printer (FDM hardware)", "query": "fdm 3d printer machine hardware", "registries": "index", "kinds": ["part"], "example": "Bambu Lab A1 mini" }
+  ],
+  "build_steps": [
+    { "title": "Author or import the model", "detail": "Script the part in CadQuery (or OpenSCAD) and export STL, or start from a downloaded STL.", "uses": ["parametric CAD / 3D model authoring"] },
+    { "title": "Repair the mesh", "detail": "Run trimesh to confirm the mesh is watertight and fix normals/holes before slicing. A non-manifold mesh slices into garbage.", "uses": ["mesh repair / processing (watertight STL cleanup)"] },
+    { "title": "Slice to G-code", "detail": "Open the STL in PrusaSlicer/OrcaSlicer, pick your printer + filament profile, set layer height and infill, and export G-code.", "uses": ["slicer (STL to printer G-code)"] },
+    { "title": "Flash firmware (if building/upgrading the printer)", "detail": "A commercial printer ships with firmware. For a hackable/upgraded printer, flash Marlin (on-board) or move motion planning to a Pi with Klipper.", "uses": ["printer motion firmware"] },
+    { "title": "Run the job from a host", "detail": "Upload the G-code to OctoPrint (or Mainsail for Klipper), level the bed, and print. Watch the first layer.", "uses": ["print host / job management", "the printer (FDM hardware)"] }
+  ],
+  "safety": "FDM hot ends reach 200-300C and heated beds 60-110C. Don't leave prints unattended long-term without a smoke/thermal cutoff, ventilate when printing ABS/ASA, and keep hands clear of the moving gantry."
+}

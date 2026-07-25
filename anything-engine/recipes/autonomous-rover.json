@@ -1,0 +1,21 @@
+{
+  "goal": "a small autonomous rover",
+  "aliases": ["autonomous ground robot", "self driving rover", "slam robot", "mapping robot", "ros2 rover", "build a robot that navigates itself"],
+  "domain": "robotics",
+  "summary": "Build a small ground rover that maps its surroundings with a LiDAR and navigates on its own: robotics middleware ties it together, a motor driver moves it, a laser scanner senses the world, SLAM builds a live map, and a navigation stack plans and drives the path. Software is free/OSS; the hardware is an orderable kit.",
+  "capabilities": [
+    { "capability": "robotics middleware / framework", "query": "ros2 donkeycar robot middleware navigation", "registries": "pypi,github,index", "kinds": ["software"], "example": "ROS 2 / donkeycar" },
+    { "capability": "motor driver control library + driver board", "query": "gpiozero motor driver tb6612 l298n raspberry pi", "registries": "pypi,vendor,index", "kinds": ["software", "part"], "example": "gpiozero + TB6612FNG" },
+    { "capability": "perception sensor (2D LiDAR) + driver", "query": "rplidar lidar driver ros scan perception", "registries": "github,vendor,index", "kinds": ["software", "part"], "example": "RPLIDAR A1 + rplidar_ros" },
+    { "capability": "SLAM / online mapping", "query": "slam toolbox lidar mapping ros2", "registries": "github,index", "kinds": ["software"], "example": "slam_toolbox" },
+    { "capability": "autonomous navigation / path planning", "query": "nav2 navigation path planning ros2", "registries": "github,index", "kinds": ["software"], "example": "Nav2" },
+    { "capability": "chassis + onboard compute hardware", "query": "4wd robot chassis raspberry pi compute", "registries": "vendor,index", "kinds": ["part"], "example": "4WD chassis + Raspberry Pi 5" }
+  ],
+  "build_steps": [
+    { "title": "Build the rolling base", "detail": "Assemble the 4WD chassis kit, mount the Raspberry Pi 5, wire the drive motors to the TB6612/L298N motor driver, and mount the RPLIDAR on top with a clear 360° view.", "uses": ["chassis + onboard compute hardware", "motor driver control library + driver board", "perception sensor (2D LiDAR) + driver"] },
+    { "title": "Install the middleware", "detail": "Install ROS 2 on the Pi. Verify you can command the motors (gpiozero test) and see LiDAR scans (rplidar_ros) as ROS topics.", "uses": ["robotics middleware / framework", "motor driver control library + driver board", "perception sensor (2D LiDAR) + driver"] },
+    { "title": "Map with SLAM", "detail": "Run slam_toolbox and drive the rover around; it builds a live occupancy map from the LiDAR scans. Save the map.", "uses": ["SLAM / online mapping"] },
+    { "title": "Navigate autonomously", "detail": "Bring up Nav2 with the saved map, set a goal pose, and let the planner + controller drive the rover there while avoiding obstacles.", "uses": ["autonomous navigation / path planning"] }
+  ],
+  "safety": "A self-driving robot can run into people, pets, or stairs. Test at low speed in a bounded area first, keep a wireless e-stop / kill switch, and never run navigation unattended near a drop."
+}

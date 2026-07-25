@@ -25,7 +25,7 @@ function load() {
       if (!f.endsWith('.json')) continue;
       try {
         const doc = JSON.parse(readFileSync(join(INDEX_DIR, f), 'utf8'));
-        for (const c of doc.components || []) out.push({ _file: f, ...c });
+        for (const c of doc.components || []) out.push({ _file: f, domain: doc.domain || '', ...c });
       } catch (e) {
         // A malformed index file should not take down the whole engine.
         process.stderr.write(`[index] skipped ${f}: ${e.message}\n`);
@@ -42,10 +42,20 @@ const tokens = (s) =>
     .split(/[^a-z0-9+]+/)
     .filter((t) => t.length > 1);
 
-const STOP = new Set(['the', 'and', 'for', 'with', 'runs', 'over', 'drives']);
+// Generic words that appear across many capabilities in different domains.
+// Affinity must match on something *distinctive*, or "sensor"/"hardware"/"board"
+// would drag a LiDAR into an air-quality stage.
+const STOP = new Set([
+  'the', 'and', 'for', 'with', 'runs', 'over', 'drives', 'your', 'you', 'into',
+  'sensor', 'hardware', 'board', 'software', 'driver', 'library', 'control',
+  'compute', 'motion', 'firmware', 'host', 'module', 'part', 'machine', 'data',
+  'signal', 'online', 'path', 'index', 'engine', 'client', 'api', 'front', 'end',
+  'transport', 'storage', 'dashboard', 'management', 'job', 'stl', 'gcode', 'code',
+  'processing', 'platform', 'framework', 'stack', 'system', 'device', 'tool',
+]);
 
-// Does this entry belong to the stage we're resolving? Compares the entry's
-// own capability tag against the stage capability by significant-token overlap.
+// Does this entry belong to the stage we're resolving? Requires overlap of a
+// DISTINCTIVE token between the entry's capability tag and the stage capability.
 function capAffinity(entryCap, stageCap) {
   if (!entryCap || !stageCap) return false;
   const a = new Set(tokens(entryCap).filter((t) => !STOP.has(t)));
@@ -53,14 +63,19 @@ function capAffinity(entryCap, stageCap) {
   return b.some((t) => a.has(t));
 }
 
-export async function search(query, { limit = 8, kinds = null, capability = null } = {}) {
-  const all = load();
+export async function search(query, { limit = 8, kinds = null, capability = null, domain = null } = {}) {
+  let all = load();
   const qt = tokens(query);
   if (!qt.length) return { ok: true, components: [] };
 
-  // When the caller names a capability and this index has entries tagged for
-  // it, scope strictly to those — that is what keeps a "design to toolpath"
-  // entry out of the "firmware" stage even though both mention g-code.
+  // First partition by domain: a recipe's stage only draws from that build's
+  // domain in the index (an air-quality build never sees rover or EEG parts).
+  if (domain && all.some((c) => (c.domain || '') === domain)) {
+    all = all.filter((c) => (c.domain || '') === domain);
+  }
+
+  // Then, within the domain, scope strictly to the stage's capability when
+  // tagged entries exist — keeps a "slicer" out of the "mesh repair" stage.
   const anyAffinity = capability && all.some((c) => capAffinity(c.capability, capability));
 
   const scored = [];

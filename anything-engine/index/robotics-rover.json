@@ -1,0 +1,168 @@
+{
+  "source": "verified stack for a small autonomous ground rover (framework + motor control + LiDAR + SLAM + navigation + chassis). Software is free/OSS; hardware prices are 2026 ballparks.",
+  "components": [
+    {
+      "name": "ROS 2 (Robot Operating System 2)",
+      "kind": "software",
+      "what": "The robotics middleware: nodes, topics, transforms, and the ecosystem SLAM/Nav2 plug into. Program with rclpy (Python) or rclcpp (C++).",
+      "capability": "robotics middleware / framework",
+      "keywords": [
+        "ros",
+        "ros2",
+        "middleware",
+        "framework",
+        "robot",
+        "rclpy",
+        "navigation"
+      ],
+      "source_url": "https://github.com/ros2/ros2",
+      "registry": "github",
+      "license": "Apache-2.0",
+      "popularity": 4200,
+      "verified": true
+    },
+    {
+      "name": "slam_toolbox",
+      "kind": "software",
+      "what": "The standard ROS 2 2D LiDAR SLAM package: build and serve a live occupancy map as the rover drives.",
+      "capability": "SLAM / online mapping",
+      "keywords": [
+        "slam",
+        "toolbox",
+        "lidar",
+        "mapping",
+        "occupancy",
+        "ros2",
+        "map"
+      ],
+      "source_url": "https://github.com/SteveMacenski/slam_toolbox",
+      "registry": "github",
+      "license": "LGPL-2.1",
+      "popularity": 2000,
+      "verified": true
+    },
+    {
+      "name": "Nav2 (Navigation2)",
+      "kind": "software",
+      "what": "The ROS 2 autonomous navigation stack: costmaps, global + local planners, controllers, recovery behaviors.",
+      "capability": "autonomous navigation / path planning",
+      "keywords": [
+        "nav2",
+        "navigation",
+        "path",
+        "planning",
+        "ros2",
+        "costmap",
+        "planner"
+      ],
+      "source_url": "https://github.com/ros-navigation/navigation2",
+      "registry": "github",
+      "license": "Apache-2.0",
+      "popularity": 3000,
+      "verified": true
+    },
+    {
+      "name": "rplidar_ros (Slamtec driver)",
+      "kind": "software",
+      "what": "ROS driver that publishes scans from a Slamtec RPLIDAR so SLAM/Nav2 can consume them.",
+      "capability": "perception sensor (2D LiDAR) + driver",
+      "keywords": [
+        "rplidar",
+        "lidar",
+        "driver",
+        "ros",
+        "scan",
+        "slamtec",
+        "perception"
+      ],
+      "source_url": "https://github.com/Slamtec/rplidar_ros",
+      "registry": "github",
+      "license": "BSD-2-Clause",
+      "popularity": 1100,
+      "verified": true
+    },
+    {
+      "name": "Slamtec RPLIDAR A1 (360\u00b0 2D LiDAR)",
+      "kind": "part",
+      "what": "Affordable 360\u00b0 laser scanner (~12m) that feeds the SLAM map. The rover's main sense of the world.",
+      "capability": "perception sensor (2D LiDAR) + driver",
+      "keywords": [
+        "rplidar",
+        "a1",
+        "lidar",
+        "laser",
+        "scanner",
+        "360",
+        "sensor",
+        "perception"
+      ],
+      "source_url": "https://www.slamtec.com/en/Lidar/A1",
+      "registry": "vendor",
+      "price_usd": 99,
+      "qty": 1,
+      "verified": true
+    },
+    {
+      "name": "TB6612FNG / L298N motor driver board",
+      "kind": "part",
+      "what": "H-bridge driver that lets the Pi's logic pins control the drive motors' direction and speed.",
+      "capability": "motor driver control library + driver board",
+      "keywords": [
+        "tb6612",
+        "l298n",
+        "motor",
+        "driver",
+        "board",
+        "h-bridge",
+        "control"
+      ],
+      "source_url": "https://www.adafruit.com/product/2448",
+      "registry": "vendor",
+      "price_usd": 8,
+      "qty": 1,
+      "verified": true
+    },
+    {
+      "name": "4WD robot chassis kit (motors + wheels + frame)",
+      "kind": "part",
+      "what": "The rolling base: frame, four gear motors, wheels, and battery holder to mount everything on.",
+      "capability": "chassis + onboard compute hardware",
+      "keywords": [
+        "4wd",
+        "chassis",
+        "kit",
+        "robot",
+        "rover",
+        "frame",
+        "wheels",
+        "motors"
+      ],
+      "source_url": "https://www.amazon.com/s?k=4wd+robot+chassis+kit",
+      "registry": "vendor",
+      "price_usd": 35,
+      "qty": 1,
+      "verified": true
+    },
+    {
+      "name": "Raspberry Pi 5 (4GB) + power + SD",
+      "kind": "part",
+      "what": "The onboard computer that runs ROS 2, SLAM, and Nav2 on the rover.",
+      "capability": "chassis + onboard compute hardware",
+      "keywords": [
+        "raspberry",
+        "pi",
+        "5",
+        "compute",
+        "computer",
+        "onboard",
+        "sbc"
+      ],
+      "source_url": "https://www.raspberrypi.com/products/raspberry-pi-5/",
+      "registry": "vendor",
+      "price_usd": 80,
+      "qty": 1,
+      "verified": true
+    }
+  ],
+  "domain": "robotics"
+}
