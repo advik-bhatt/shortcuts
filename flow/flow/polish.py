@@ -128,9 +128,13 @@ def polish(
             }
         ],
     )
-    # Haiku 4.5 doesn't take thinking/effort params; newer tiers do, and for a
-    # sub-second formatting pass we want thinking off and effort low.
-    if not cfg.polish_model.startswith("claude-haiku"):
+    # Haiku 4.5 doesn't take thinking/effort params. Sonnet/Opus tiers accept
+    # thinking disabled + low effort (what a sub-second formatting pass wants).
+    # Fable/Mythos reject an explicit thinking config entirely — omit it there.
+    model = cfg.polish_model
+    if model.startswith(("claude-fable", "claude-mythos")):
+        kwargs["output_config"] = {"effort": "low"}
+    elif not model.startswith("claude-haiku"):
         kwargs["thinking"] = {"type": "disabled"}
         kwargs["output_config"] = {"effort": "low"}
 

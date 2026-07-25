@@ -145,6 +145,8 @@ def run(cfg: Config) -> None:
                 notify(f"mic error: {e}")
                 return
         # context lookup happens while you talk, off the hot path
+        snapshot_holder.pop("snap", None)  # never reuse the previous dictation's context
+
         def grab() -> None:
             snapshot_holder["snap"] = take_snapshot(cfg, stores)
 
