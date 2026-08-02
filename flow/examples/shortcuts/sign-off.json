@@ -1,0 +1,15 @@
+{
+  "name": "sign off",
+  "description": "Your sign-off, matched to where you are. Edit the text blocks — these are YOUR words.",
+  "enabled": true,
+  "inline": true,
+  "trigger": { "phrases": ["insert my sign off", "sign off daal do"] },
+  "blocks": [
+    {
+      "type": "if",
+      "cond": { "kind": "app", "value": "slack" },
+      "then": [{ "type": "text", "value": "cheers" }],
+      "else": [{ "type": "text", "value": "Best,\nYour Name" }]
+    }
+  ]
+}

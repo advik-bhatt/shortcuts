@@ -13,9 +13,9 @@ dictation never dies mid-thought.
 
 from __future__ import annotations
 
-import os
 import re
 
+from . import llm
 from .config import Config
 from .language import ENGLISH, TargetStyle
 
@@ -33,8 +33,9 @@ Rules:
    - Transliterate between scripts when the transcript's script differs from the target. Transliterate, never translate — "कल मिलते हैं" with target latin becomes "kal milte hain", not "see you tomorrow".
    - If the transcript clearly contains Hindi the target missed (or vice versa), trust the transcript for WHAT was said and the target only for WHICH SCRIPT Hindi is written in.
 6. Numbers: use digits for quantities, times, and amounts ("meet at 5 30" -> "meet at 5:30") unless clearly spoken as a deliberate word.
-7. Match the destination: in code editors and terminals use plain ASCII punctuation and no smart quotes; in chat apps keep it casual and don't force capitalization onto lowercase-style messages the user has been sending.
-8. If the transcript is empty, pure noise, or only filler, output nothing at all."""
+7. Match the destination: in code editors and terminals use plain ASCII punctuation and no smart quotes; in chat apps keep it casual and don't force capitalization onto lowercase-style messages the user has been sending. Obey any style lines in the context block — they are measured from this exact conversation.
+8. If the transcript is empty, pure noise, or only filler, output nothing at all.
+9. Strings listed in the <verbatim> block were inserted by the user's own snippet expansions: each must appear in your output EXACTLY as given, character for character — never rephrase, re-punctuate, or re-case them."""
 
 
 def build_user_message(
@@ -45,6 +46,8 @@ def build_user_message(
     contact: str | None = None,
     recent: list[str] | None = None,
     dictionary: list[str] | None = None,
+    style_hints: list[str] | None = None,
+    verbatim: list[str] | None = None,
 ) -> str:
     lines = ["<context>"]
     lines.append(f"app: {app or 'unknown'}")
@@ -56,7 +59,14 @@ def build_user_message(
             lines.append(f"- {r}")
     if dictionary:
         lines.append("user dictionary (proper nouns, preferred spellings): " + ", ".join(dictionary))
+    for hint in style_hints or []:
+        lines.append(hint)
     lines.append("</context>")
+    if verbatim:
+        lines.append("<verbatim>")
+        for v in verbatim:
+            lines.append(v)
+        lines.append("</verbatim>")
     lines.append("<target>")
     lines.append(f"language: {target.language}")
     if target.language != ENGLISH:
@@ -85,11 +95,6 @@ def fallback_cleanup(raw: str) -> str:
     return text
 
 
-def _extract_text(response) -> str:
-    parts = [block.text for block in response.content if getattr(block, "type", "") == "text"]
-    return "".join(parts).strip()
-
-
 def polish(
     raw: str,
     target: TargetStyle,
@@ -98,52 +103,21 @@ def polish(
     app: str | None = None,
     contact: str | None = None,
     recent: list[str] | None = None,
+    style_hints: list[str] | None = None,
+    verbatim: list[str] | None = None,
 ) -> str:
     """LLM polish; falls back to deterministic cleanup on any failure."""
     if not raw.strip():
         return ""
-    if not os.environ.get("ANTHROPIC_API_KEY"):
-        return fallback_cleanup(raw)
-
-    try:
-        import anthropic
-    except ImportError:
-        return fallback_cleanup(raw)
-
-    kwargs: dict = dict(
-        model=cfg.polish_model,
-        max_tokens=cfg.polish_max_tokens,
-        system=SYSTEM_PROMPT,
-        messages=[
-            {
-                "role": "user",
-                "content": build_user_message(
-                    raw,
-                    target,
-                    app=app,
-                    contact=contact,
-                    recent=recent,
-                    dictionary=cfg.dictionary or None,
-                ),
-            }
-        ],
+    message = build_user_message(
+        raw,
+        target,
+        app=app,
+        contact=contact,
+        recent=recent,
+        dictionary=cfg.dictionary or None,
+        style_hints=style_hints,
+        verbatim=verbatim,
     )
-    # Haiku 4.5 doesn't take thinking/effort params. Sonnet/Opus tiers accept
-    # thinking disabled + low effort (what a sub-second formatting pass wants).
-    # Fable/Mythos reject an explicit thinking config entirely — omit it there.
-    model = cfg.polish_model
-    if model.startswith(("claude-fable", "claude-mythos")):
-        kwargs["output_config"] = {"effort": "low"}
-    elif not model.startswith("claude-haiku"):
-        kwargs["thinking"] = {"type": "disabled"}
-        kwargs["output_config"] = {"effort": "low"}
-
-    try:
-        client = anthropic.Anthropic(timeout=cfg.polish_timeout)
-        response = client.messages.create(**kwargs)
-        if getattr(response, "stop_reason", None) == "refusal":
-            return fallback_cleanup(raw)
-        text = _extract_text(response)
-        return text if text else fallback_cleanup(raw)
-    except Exception:
-        return fallback_cleanup(raw)
+    text = llm.complete(SYSTEM_PROMPT, message, cfg)
+    return text if text else fallback_cleanup(raw)

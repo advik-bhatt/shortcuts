@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "advik-flow"
-version = "0.1.0"
-description = "Push-to-talk dictation that knows when you're speaking Hindi, Hinglish, or English — and which script the conversation wants."
+version = "0.2.0"
+description = "Push-to-talk dictation with block-programmable voice shortcuts, edit-by-voice, tone matching, and a fully-local $0 mode. Knows when you're speaking Hindi, Hinglish, or English — and which script the conversation wants."
 requires-python = ">=3.10"
 dependencies = [
     "requests>=2.31",
@@ -19,3 +19,6 @@ flow = "flow.cli:main"
 
 [tool.setuptools]
 packages = ["flow"]
+
+[tool.setuptools.package-data]
+flow = ["blocks.html"]

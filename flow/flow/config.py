@@ -23,6 +23,10 @@ def flow_dir() -> Path:
     return d
 
 
+def shortcuts_dir() -> Path:
+    return flow_dir() / "shortcuts"
+
+
 @dataclass
 class Config:
     # Push-to-talk key (pynput key name: alt_r, cmd_r, ctrl_r, f13, ...)
@@ -35,6 +39,14 @@ class Config:
     asr_model: str = ""
     asr_api_key: str = ""
 
+    # Local ASR (whisper.cpp; the $0/month mode — see flow/local_asr.py)
+    #   auto   — hosted when a key is set, local when the model is downloaded
+    #   local  — always local
+    #   hosted — never local
+    asr_mode: str = "auto"
+    local_asr_port: int = 8586
+    local_asr_model: str = "large-v3-turbo-q5_0"
+
     # Polish pass (Claude)
     polish_model: str = "claude-haiku-4-5"
     polish_max_tokens: int = 1000
@@ -46,13 +58,23 @@ class Config:
     #   latin      — always romanized (Hinglish spelling)
     hindi_script_policy: str = "mirror"
 
+    # Smart shortcuts
+    smart_match: str = "conservative"  # off | conservative | eager (LLM assist)
+    allow_shell: bool = False          # shell blocks stay dead until this is true
+    tap_lock: bool = True              # tap the hotkey (instead of holding) to lock recording
+    tap_threshold: float = 0.35        # seconds; shorter presses count as taps
+    edit_hotkey: str = "cmd_r"         # hold + speak an instruction to edit the selection
+    editor_port: int = 7739            # `flow blocks` local editor
+
     history_limit: int = 500
     context_recent: int = 4
     dictionary: list[str] = field(default_factory=list)
 
     def resolve_asr(self) -> None:
         """Fill in ASR endpoint/key from the environment when not set explicitly."""
-        if not self.asr_api_key:
+        mode = os.environ.get("FLOW_ASR_MODE", self.asr_mode)
+        self.asr_mode = mode
+        if not self.asr_api_key and mode != "local":
             if os.environ.get("GROQ_API_KEY"):
                 self.asr_api_key = os.environ["GROQ_API_KEY"]
                 self.asr_base_url = self.asr_base_url or GROQ_BASE_URL
@@ -61,10 +83,23 @@ class Config:
                 self.asr_api_key = os.environ["OPENAI_API_KEY"]
                 self.asr_base_url = self.asr_base_url or OPENAI_BASE_URL
                 self.asr_model = self.asr_model or "whisper-1"
+        if not self.asr_api_key and mode in ("local", "auto"):
+            # local mode: explicit, or automatic when the model is downloaded
+            from .local_asr import model_path
+
+            if mode == "local" or model_path(self.local_asr_model).exists():
+                self.asr_base_url = self.asr_base_url or f"http://127.0.0.1:{self.local_asr_port}/v1"
+                self.asr_model = self.asr_model or self.local_asr_model
+                self.asr_api_key = "local"
         # explicit base url / key via env always wins
         self.asr_base_url = os.environ.get("FLOW_ASR_BASE_URL", self.asr_base_url)
         self.asr_model = os.environ.get("FLOW_ASR_MODEL", self.asr_model)
         self.asr_api_key = os.environ.get("FLOW_ASR_API_KEY", self.asr_api_key)
+
+    def asr_is_local(self) -> bool:
+        return self.asr_api_key == "local" or self.asr_base_url.startswith(
+            f"http://127.0.0.1:{self.local_asr_port}"
+        )
 
 
 def load() -> Config:
@@ -85,6 +120,12 @@ def load() -> Config:
         cfg.polish_model = os.environ["FLOW_MODEL"]
     if os.environ.get("FLOW_HINDI_SCRIPT"):
         cfg.hindi_script_policy = os.environ["FLOW_HINDI_SCRIPT"]
+    if os.environ.get("FLOW_EDIT_HOTKEY"):
+        cfg.edit_hotkey = os.environ["FLOW_EDIT_HOTKEY"]
+    if os.environ.get("FLOW_SMART_MATCH"):
+        cfg.smart_match = os.environ["FLOW_SMART_MATCH"]
+    if os.environ.get("FLOW_ALLOW_SHELL"):
+        cfg.allow_shell = os.environ["FLOW_ALLOW_SHELL"].lower() in ("1", "true", "yes")
 
     dict_path = flow_dir() / "dictionary.txt"
     if dict_path.exists():

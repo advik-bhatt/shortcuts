@@ -32,11 +32,14 @@ Full docs: **[anything-engine/README.md](./anything-engine/README.md)**.
 
 - **[anything-engine/](./anything-engine/)** — the engine (sources, recipes,
   verified index, tests).
-- **[flow/](./flow/)** — push-to-talk dictation that replaces Wispr Flow:
-  hold a key, speak English/Hindi/Hinglish, and it types the result into the
-  frontmost app with human punctuation, choosing Devanagari vs romanized
-  Hinglish automatically from who you're talking to. ~$2/month in API costs
-  vs Wispr's $15.
+- **[flow/](./flow/)** — the whole Wispr Flow feature set on your own keys,
+  plus the thing Wispr doesn't have: **shortcuts as Scratch-style block
+  programs fired by voice** (spoken slots, per-app branching, real actions,
+  a visual editor at `flow blocks`), edit-selected-text-by-voice, tone
+  matching measured per conversation, tap-to-lock hands-free, and automatic
+  Hindi/Hinglish script handling. ~$1.70/month hosted, or $0 fully offline
+  via local whisper.cpp (`flow local setup`). Sourced parity dossier:
+  `flow/docs/wispr-parity-2026-08.md`.
 - **[builds/](./builds/)** — dossiers the engine has produced. The flagship is
   **[graphic-design-to-hardware](./builds/graphic-design-to-hardware/)**: take a
   2D design and build the machine that turns it into physical motion (pen

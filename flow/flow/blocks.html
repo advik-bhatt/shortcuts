@@ -1,0 +1,426 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="data:,">
+<title>flow blocks</title>
+<style>
+  :root {
+    --paper: #f6f4ee; --ink: #21201c; --line: #d8d4c8; --card: #fffdf7;
+    --trigger: #b45309; --content: #1d4ed8; --logic: #6d28d9; --action: #047857;
+    --danger: #b91c1c; --accent: #0f766e;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--paper); color: var(--ink);
+    font: 14px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    display: grid; grid-template-columns: 230px 1fr 250px; height: 100vh;
+  }
+  h1 { font-size: 15px; margin: 0; letter-spacing: .02em; }
+  button {
+    font: inherit; cursor: pointer; border: 1px solid var(--line);
+    background: var(--card); color: var(--ink); border-radius: 6px; padding: 4px 10px;
+  }
+  button:hover { border-color: var(--ink); }
+  button:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+  input, select, textarea {
+    font: inherit; border: 1px solid var(--line); border-radius: 5px;
+    padding: 3px 6px; background: #fff; color: var(--ink); max-width: 100%;
+  }
+  input:focus-visible, select:focus-visible { outline: 2px solid var(--accent); outline-offset: 0; }
+
+  /* left rail: the shortcut list */
+  #rail { border-right: 1px solid var(--line); padding: 14px; overflow-y: auto; }
+  #rail header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+  .sc-item {
+    display: block; width: 100%; text-align: left; margin-bottom: 6px;
+    padding: 7px 10px; border-radius: 6px; border: 1px solid var(--line); background: var(--card);
+  }
+  .sc-item.on { border-color: var(--ink); box-shadow: 2px 2px 0 rgba(0,0,0,.12); }
+  .sc-item .mode { color: #777; font-size: 11.5px; display: block; }
+  .sc-item.off-state { opacity: .55; }
+  #problems { color: var(--danger); font-size: 12px; white-space: pre-wrap; margin-top: 10px; }
+
+  /* canvas */
+  #canvas { padding: 16px 22px 40px; overflow-y: auto; }
+  #meta { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 6px; }
+  #meta input[name=name] { font-size: 16px; font-weight: 600; width: 260px; }
+  #meta label { font-size: 12.5px; display: inline-flex; gap: 4px; align-items: center; }
+  #desc { width: 100%; max-width: 560px; margin-bottom: 12px; }
+  .hint { color: #6b6a64; font-size: 12px; margin: 4px 0 14px; }
+
+  /* the trigger hat block */
+  .hat {
+    background: color-mix(in srgb, var(--trigger) 9%, #fff); border: 1.5px solid var(--trigger);
+    border-radius: 14px 14px 6px 6px; padding: 10px 12px; max-width: 640px; margin-bottom: 2px;
+  }
+  .hat .kicker { color: var(--trigger); font-weight: 700; font-size: 11.5px; letter-spacing: .06em; text-transform: uppercase; }
+  .phrase-row { display: flex; gap: 6px; margin-top: 6px; align-items: center; }
+  .phrase-row input { flex: 1; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 13px; }
+
+  /* block stack */
+  .stack { max-width: 640px; }
+  .block {
+    border: 1.5px solid; border-radius: 7px; padding: 7px 10px; margin-top: 6px;
+    background: #fff; display: flex; flex-wrap: wrap; gap: 6px; align-items: center;
+  }
+  .block > .tag { font-weight: 700; font-size: 11.5px; letter-spacing: .05em; text-transform: uppercase; }
+  .b-content { border-color: var(--content); } .b-content > .tag { color: var(--content); }
+  .b-logic   { border-color: var(--logic); background: color-mix(in srgb, var(--logic) 5%, #fff); }
+  .b-logic > .tag { color: var(--logic); }
+  .b-action  { border-color: var(--action); } .b-action > .tag { color: var(--action); }
+  .b-shell   { border-color: var(--danger); } .b-shell > .tag { color: var(--danger); }
+  .block .ctl { margin-left: auto; display: flex; gap: 3px; }
+  .block .ctl button { padding: 1px 7px; font-size: 12px; border-radius: 5px; }
+  .nest { flex-basis: 100%; border-left: 3px solid var(--line); margin: 4px 0 2px 8px; padding-left: 10px; }
+  .nest .nest-label { font-size: 11.5px; color: #6b6a64; font-weight: 600; }
+  .adder { margin-top: 6px; font-size: 12.5px; padding: 2px 9px; border-style: dashed; }
+  .adder.armed { border-color: var(--accent); color: var(--accent); border-style: solid; }
+
+  /* try panel */
+  #try { margin-top: 26px; border-top: 1px solid var(--line); padding-top: 14px; max-width: 640px; }
+  #try .row { display: flex; gap: 8px; flex-wrap: wrap; }
+  #try input[name=utterance] { flex: 1; min-width: 240px; }
+  #try-out { margin-top: 10px; padding: 10px 12px; border-radius: 7px; background: var(--card);
+             border: 1px solid var(--line); font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+             font-size: 12.5px; white-space: pre-wrap; }
+  #try-out.fire { border-color: var(--action); }
+  #try-out.nofire { border-color: var(--line); color: #6b6a64; }
+
+  #actions-bar { margin-top: 18px; display: flex; gap: 10px; align-items: center; }
+  #save { background: var(--ink); color: var(--paper); border-color: var(--ink); padding: 6px 16px; }
+  #status { font-size: 12.5px; color: #6b6a64; }
+  #status.err { color: var(--danger); }
+
+  /* palette */
+  #palette { border-left: 1px solid var(--line); padding: 14px; overflow-y: auto; }
+  #palette h2 { font-size: 11.5px; letter-spacing: .07em; text-transform: uppercase; margin: 14px 0 6px; }
+  #palette h2.c-content { color: var(--content); } #palette h2.c-logic { color: var(--logic); }
+  #palette h2.c-action { color: var(--action); }
+  .pal { display: block; width: 100%; text-align: left; margin-bottom: 5px; padding: 6px 9px; }
+  .pal small { display: block; color: #6b6a64; font-size: 11px; }
+  #target-note { font-size: 11.5px; color: var(--accent); min-height: 16px; margin-top: 4px; }
+  .empty { color: #6b6a64; font-size: 13px; margin-top: 8px; }
+</style>
+</head>
+<body>
+
+<nav id="rail" aria-label="shortcuts">
+  <header><h1>flow blocks</h1><button id="new" title="new shortcut">＋ new</button></header>
+  <div id="list" role="list"></div>
+  <div id="problems"></div>
+</nav>
+
+<main id="canvas" aria-label="editor"></main>
+
+<aside id="palette" aria-label="block palette">
+  <h1>blocks</h1>
+  <p id="target-note"></p>
+  <div id="pal"></div>
+</aside>
+
+<script>
+"use strict";
+const api = (path, opts={}) => fetch(path, {
+  headers: {"X-Flow": "1", "Content-Type": "application/json"}, ...opts
+}).then(r => r.json());
+
+/* ---------- block catalog ---------- */
+const CAT = { content: "b-content", logic: "b-logic", action: "b-action", shell: "b-shell" };
+const BLOCKS = {
+  text:   {cat: "content", label: "text",  make: () => ({type:"text", value:""}),
+           help: "words you wrote, typed exactly"},
+  slot:   {cat: "content", label: "slot",  make: () => ({type:"slot", name:"", fallback:""}),
+           help: "words you spoke into <slot>"},
+  date:   {cat: "content", label: "date",  make: () => ({type:"date", format:"long"}),
+           help: "today's date"},
+  time:   {cat: "content", label: "time",  make: () => ({type:"time", format:"12h"}),
+           help: "the time right now"},
+  clipboard: {cat: "content", label: "clipboard", make: () => ({type:"clipboard"}),
+           help: "whatever is on the clipboard"},
+  last_dictation: {cat: "content", label: "last dictation", make: () => ({type:"last_dictation"}),
+           help: "your previous dictation"},
+  if:     {cat: "logic", label: "if", make: () => ({type:"if", cond:{kind:"app", value:""}, then:[], else:[]}),
+           help: "branch on app, contact, time"},
+  transform: {cat: "logic", label: "transform", make: () => ({type:"transform", op:"upper", children:[]}),
+           help: "reshape the blocks inside"},
+  open_url: {cat: "action", label: "open url", make: () => ({type:"open_url", url:"https://"}),
+           help: "open a link ({slot} works)"},
+  open_app: {cat: "action", label: "open app", make: () => ({type:"open_app", app:""}),
+           help: "launch an application"},
+  keys:   {cat: "action", label: "press keys", make: () => ({type:"keys", combo:"cmd+enter"}),
+           help: "synthesize a key combo"},
+  pause:  {cat: "action", label: "pause", make: () => ({type:"pause", seconds:0.5}),
+           help: "wait between actions"},
+  shell:  {cat: "shell", label: "shell", make: () => ({type:"shell", cmd:""}),
+           help: "run a command (off until allow_shell)"},
+};
+const COND_KINDS = ["app","contact","hour_before","hour_after","weekday","slot_present"];
+const TRANSFORM_OPS = ["upper","lower","title","sentence","trim"];
+const DATE_FORMATS = ["long","iso","short","day"];
+const TIME_FORMATS = ["12h","24h"];
+
+/* ---------- state ---------- */
+let state = { shortcuts: [], sel: -1, dirty: false, target: null };
+const fresh = () => ({ name: "new shortcut", description: "", enabled: true, inline: false,
+                       trigger: {phrases: [""]}, blocks: [] });
+const current = () => state.shortcuts[state.sel];
+
+/* resolve a container (array of blocks) from a path like ["blocks",2,"then"] */
+function container(path) {
+  let node = current();
+  for (const step of path) node = node[step];
+  return node;
+}
+
+/* ---------- rendering ---------- */
+const el = (tag, attrs={}, ...kids) => {
+  const n = document.createElement(tag);
+  for (const [k,v] of Object.entries(attrs)) {
+    if (k === "class") n.className = v;
+    else if (k.startsWith("on")) n.addEventListener(k.slice(2), v);
+    else if (k === "text") n.textContent = v;
+    else n.setAttribute(k, v);
+  }
+  for (const kid of kids) if (kid != null) n.append(kid);
+  return n;
+};
+
+function renderList() {
+  const list = document.getElementById("list");
+  list.replaceChildren();
+  state.shortcuts.forEach((sc, i) => {
+    const mode = (sc.inline ? "inline snippet" : "voice command") + (sc.enabled ? "" : ", off");
+    const b = el("button", {
+      class: "sc-item" + (i === state.sel ? " on" : "") + (sc.enabled ? "" : " off-state"),
+      role: "listitem",
+      onclick: () => { if (confirmLoseEdits()) { state.sel = i; state.dirty = false; state.target = null; render(); } },
+    }, el("strong", {text: sc.name || "(unnamed)"}), el("span", {class: "mode", text: mode}));
+    list.append(b);
+  });
+}
+
+function markDirty() { state.dirty = true; renderStatus(); }
+function confirmLoseEdits() {
+  return !state.dirty || confirm("Discard unsaved edits to this shortcut?");
+}
+
+function fieldInput(obj, key, attrs={}) {
+  return el("input", { value: obj[key] ?? "", ...attrs,
+    oninput: e => { obj[key] = attrs.type === "number" ? parseFloat(e.target.value) || 0 : e.target.value; markDirty(); } });
+}
+function fieldSelect(obj, key, options, extra) {
+  const s = el("select", { onchange: e => { obj[key] = e.target.value; markDirty(); if (extra) extra(); } });
+  for (const o of options) s.append(el("option", {value: o, text: o, ...(obj[key] === o ? {selected: ""} : {})}));
+  return s;
+}
+
+function renderBlock(b, path, idx) {
+  const spec = BLOCKS[b.type] || {cat: "content", label: b.type};
+  const row = el("div", {class: "block " + CAT[spec.cat]});
+  row.append(el("span", {class: "tag", text: spec.label}));
+
+  if (b.type === "text") {
+    const t = el("textarea", {rows: b.value && b.value.includes("\n") ? 3 : 1, style: "flex:1;min-width:220px",
+      oninput: e => { b.value = e.target.value; markDirty(); }});
+    t.value = b.value || "";
+    row.append(t);
+  }
+  if (b.type === "slot") {
+    row.append(fieldInput(b, "name", {placeholder: "slot name", size: 10}));
+    row.append(el("span", {text: "fallback"}));
+    row.append(fieldInput(b, "fallback", {placeholder: "(empty)", size: 10}));
+  }
+  if (b.type === "date") row.append(fieldSelect(b, "format", DATE_FORMATS));
+  if (b.type === "time") row.append(fieldSelect(b, "format", TIME_FORMATS));
+  if (b.type === "if") {
+    b.cond = b.cond || {kind: "app", value: ""};
+    row.append(fieldSelect(b.cond, "kind", COND_KINDS));
+    row.append(fieldInput(b.cond, "value", {placeholder: "value", size: 12}));
+    row.append(nest("then", b, "then", path, idx));
+    row.append(nest("else", b, "else", path, idx));
+  }
+  if (b.type === "transform") {
+    row.append(fieldSelect(b, "op", TRANSFORM_OPS));
+    row.append(nest("of", b, "children", path, idx));
+  }
+  if (b.type === "open_url") row.append(fieldInput(b, "url", {style: "flex:1;min-width:220px"}));
+  if (b.type === "open_app") row.append(fieldInput(b, "app", {placeholder: "Obsidian", size: 16}));
+  if (b.type === "keys") row.append(fieldInput(b, "combo", {placeholder: "cmd+shift+4", size: 14}));
+  if (b.type === "pause") row.append(fieldInput(b, "seconds", {type: "number", step: "0.1", min: "0", size: 5}));
+  if (b.type === "shell") row.append(fieldInput(b, "cmd", {style: "flex:1;min-width:220px", placeholder: "echo hi"}));
+
+  const arr = container(path);
+  const ctl = el("span", {class: "ctl"},
+    el("button", {title: "move up", text: "↑", onclick: () => { if (idx > 0) { [arr[idx-1], arr[idx]] = [arr[idx], arr[idx-1]]; markDirty(); render(); } }}),
+    el("button", {title: "move down", text: "↓", onclick: () => { if (idx < arr.length-1) { [arr[idx+1], arr[idx]] = [arr[idx], arr[idx+1]]; markDirty(); render(); } }}),
+    el("button", {title: "delete block", text: "×", onclick: () => { arr.splice(idx, 1); markDirty(); render(); }}),
+  );
+  row.append(ctl);
+  return row;
+}
+
+function nest(label, parent, key, path, idx) {
+  parent[key] = parent[key] || [];
+  const sub = el("div", {class: "nest"});
+  sub.append(el("div", {class: "nest-label", text: label}));
+  const subPath = [...path, idx, key];
+  parent[key].forEach((child, i) => sub.append(renderBlock(child, subPath, i)));
+  sub.append(adder(subPath, `add inside "${label}"`));
+  return sub;
+}
+
+function adder(path, label) {
+  const armed = JSON.stringify(state.target) === JSON.stringify(path);
+  return el("button", {
+    class: "adder" + (armed ? " armed" : ""),
+    text: armed ? "◉ adding here — pick a block →" : "＋ " + (label || "add block"),
+    onclick: () => { state.target = armed ? null : path; render(); },
+  });
+}
+
+function renderCanvas() {
+  const c = document.getElementById("canvas");
+  c.replaceChildren();
+  const sc = current();
+  if (!sc) {
+    c.append(el("p", {class: "empty", text: "Pick a shortcut on the left, or make a new one."}));
+    return;
+  }
+
+  const meta = el("div", {id: "meta"});
+  meta.append(fieldInput(sc, "name", {name: "name", "aria-label": "shortcut name"}));
+  const mkToggle = (key, label) => el("label", {},
+    el("input", {type: "checkbox", ...(sc[key] ? {checked: ""} : {}),
+      onchange: e => { sc[key] = e.target.checked; markDirty(); renderList(); }}), label);
+  meta.append(mkToggle("enabled", "enabled"));
+  meta.append(mkToggle("inline", "inline snippet (expands mid-dictation)"));
+  c.append(meta);
+  c.append(fieldInput(sc, "description", {id: "desc", placeholder: "what this is for (optional)"}));
+
+  const hat = el("div", {class: "hat"});
+  hat.append(el("div", {class: "kicker", text: sc.inline ? "when I say, anywhere in a dictation" : "when I say (the whole utterance)"}));
+  (sc.trigger.phrases.length ? sc.trigger.phrases : [""]).forEach((p, i) => {
+    const row = el("div", {class: "phrase-row"});
+    const inp = el("input", {value: p, placeholder: "email <person> about <topic>",
+      oninput: e => { sc.trigger.phrases[i] = e.target.value; markDirty(); }});
+    row.append(inp);
+    row.append(el("button", {title: "remove phrase", text: "×",
+      onclick: () => { sc.trigger.phrases.splice(i, 1); if (!sc.trigger.phrases.length) sc.trigger.phrases.push(""); markDirty(); render(); }}));
+    hat.append(row);
+  });
+  hat.append(el("button", {class: "adder", text: "＋ another way to say it",
+    onclick: () => { sc.trigger.phrases.push(""); markDirty(); render(); }}));
+  c.append(hat);
+  c.append(el("p", {class: "hint", text: "<slot> captures spoken words, (word) is optional, and fillers like um/please are ignored"}));
+
+  const stack = el("div", {class: "stack"});
+  sc.blocks.forEach((b, i) => stack.append(renderBlock(b, ["blocks"], i)));
+  stack.append(adder(["blocks"]));
+  c.append(stack);
+
+  const bar = el("div", {id: "actions-bar"},
+    el("button", {id: "save", text: "save", onclick: save}),
+    el("button", {text: "delete", onclick: destroy}),
+    el("span", {id: "status", role: "status"}),
+  );
+  c.append(bar);
+
+  const tryBox = el("div", {id: "try"});
+  tryBox.append(el("h2", {text: "try it", style: "font-size:12.5px;letter-spacing:.06em;text-transform:uppercase;margin:0 0 8px"}));
+  const u = el("input", {name: "utterance", placeholder: "say something…"});
+  const app = el("input", {placeholder: "app (optional)", size: 10});
+  const contact = el("input", {placeholder: "contact (optional)", size: 12});
+  const out = el("div", {id: "try-out", class: "nofire", text: "type an utterance and hit try — nothing is executed, ever"});
+  const go = async () => {
+    const res = await api("/api/try", {method: "POST", body: JSON.stringify({
+      utterance: u.value, shortcut: current(), app: app.value, contact: contact.value })});
+    if (res.problems) { out.className = "nofire"; out.textContent = "fix first: " + res.problems.join("; "); return; }
+    out.className = res.fires ? "fire" : "nofire";
+    out.textContent = res.fires
+      ? `fires (${res.kind}) → ${res.describe}` + (Object.keys(res.slots || {}).length ? `\nslots: ${JSON.stringify(res.slots)}` : "")
+      : "doesn't fire — " + (res.reason || "no match");
+  };
+  u.addEventListener("keydown", e => { if (e.key === "Enter") go(); });
+  tryBox.append(el("div", {class: "row"}, u, app, contact, el("button", {text: "try", onclick: go})));
+  tryBox.append(out);
+  c.append(tryBox);
+}
+
+function renderPalette() {
+  const pal = document.getElementById("pal");
+  pal.replaceChildren();
+  const note = document.getElementById("target-note");
+  note.textContent = state.target ? "adding into the highlighted spot" :
+    (current() ? "click a block to add it to the end" : "");
+  if (!current()) return;
+  let lastCat = null;
+  const names = {content: "content", logic: "logic", action: "actions", shell: "power"};
+  for (const [key, spec] of Object.entries(BLOCKS)) {
+    if (spec.cat !== lastCat) {
+      pal.append(el("h2", {class: "c-" + spec.cat, text: names[spec.cat] || spec.cat}));
+      lastCat = spec.cat;
+    }
+    pal.append(el("button", {class: "pal", onclick: () => {
+      const arr = container(state.target || ["blocks"]);
+      arr.push(spec.make());
+      markDirty(); render();
+    }}, el("strong", {text: spec.label}), el("small", {text: spec.help})));
+  }
+}
+
+function renderStatus(msg, err) {
+  const s = document.getElementById("status");
+  if (!s) return;
+  s.className = err ? "err" : "";
+  s.textContent = msg || (state.dirty ? "unsaved edits" : "");
+}
+
+function render() { renderList(); renderCanvas(); renderPalette(); renderStatus(); }
+
+/* ---------- persistence ---------- */
+async function load() {
+  const data = await api("/api/shortcuts");
+  state.shortcuts = data.shortcuts;
+  document.getElementById("problems").textContent =
+    data.problems.length ? "broken files:\n" + data.problems.join("\n") : "";
+  if (state.sel >= state.shortcuts.length) state.sel = state.shortcuts.length - 1;
+  render();
+}
+
+async function save() {
+  const sc = current();
+  sc.trigger.phrases = sc.trigger.phrases.map(p => p.trim()).filter(Boolean);
+  if (!sc.trigger.phrases.length) sc.trigger.phrases.push("");
+  const res = await api("/api/shortcuts", {method: "POST", body: JSON.stringify(sc)});
+  if (res.problems) { renderStatus(res.problems.join("; "), true); return; }
+  state.dirty = false;
+  renderStatus("saved ✓");
+  const keep = sc.name;
+  await load();
+  state.sel = state.shortcuts.findIndex(s => s.name === keep);
+  render(); renderStatus("saved ✓");
+}
+
+async function destroy() {
+  const sc = current();
+  if (!confirm(`Delete "${sc.name}"?`)) return;
+  await api("/api/delete", {method: "POST", body: JSON.stringify({name: sc.name})});
+  state.sel = -1; state.dirty = false;
+  await load();
+}
+
+document.getElementById("new").addEventListener("click", () => {
+  if (!confirmLoseEdits()) return;
+  state.shortcuts.push(fresh());
+  state.sel = state.shortcuts.length - 1;
+  state.dirty = true; state.target = null;
+  render();
+});
+
+window.addEventListener("beforeunload", e => { if (state.dirty) e.preventDefault(); });
+load();
+</script>
+</body>
+</html>

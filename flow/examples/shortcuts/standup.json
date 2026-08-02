@@ -1,0 +1,13 @@
+{
+  "name": "standup note",
+  "description": "Say \"standup note shipped the blocks editor\" and get a dated line.",
+  "enabled": true,
+  "inline": false,
+  "trigger": { "phrases": ["standup note <update>", "standup (note) likho <update>"] },
+  "blocks": [
+    { "type": "text", "value": "Standup " },
+    { "type": "date", "format": "iso" },
+    { "type": "text", "value": " — " },
+    { "type": "transform", "op": "sentence", "children": [{ "type": "slot", "name": "update" }] }
+  ]
+}

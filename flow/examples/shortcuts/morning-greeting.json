@@ -1,0 +1,22 @@
+{
+  "name": "greeting",
+  "description": "Time-aware greeting line, inline: \"good wala greeting, ready for standup?\"",
+  "enabled": true,
+  "inline": true,
+  "trigger": { "phrases": ["good wala greeting"] },
+  "blocks": [
+    {
+      "type": "if",
+      "cond": { "kind": "hour_before", "value": "12" },
+      "then": [{ "type": "text", "value": "good morning" }],
+      "else": [
+        {
+          "type": "if",
+          "cond": { "kind": "hour_before", "value": "17" },
+          "then": [{ "type": "text", "value": "good afternoon" }],
+          "else": [{ "type": "text", "value": "good evening" }]
+        }
+      ]
+    }
+  ]
+}

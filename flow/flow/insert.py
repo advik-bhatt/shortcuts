@@ -39,6 +39,16 @@ def paste(text: str) -> None:
         _run(["pbcopy"], input=old)
 
 
+def read_clipboard() -> str:
+    """Current clipboard text; '' off macOS or on failure."""
+    if sys.platform != "darwin":
+        return ""
+    try:
+        return _run(["pbpaste"]).stdout.decode("utf-8", errors="replace")
+    except (OSError, subprocess.TimeoutExpired):
+        return ""
+
+
 def notify(message: str, title: str = "flow") -> None:
     if sys.platform != "darwin":
         print(f"[{title}] {message}")
