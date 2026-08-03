@@ -84,6 +84,27 @@ ledger() {
   return 0
 }
 
+# Ledger lines are written AFTER the push they describe, so they can never ride
+# along with it. Left alone, every successful push leaves the knowledge-base
+# permanently one line dirty. Sweep it: commit the ledger and push it on its own,
+# best-effort — if this races another thread, the line simply rides along with
+# the next commit, which is the old behavior and harmless.
+ledger_sweep() {
+  for d in "${SECOND_BRAIN_KB:-}" "$REPO_ROOT/../knowledge-base" \
+           "$HOME/knowledge-base" "$HOME/code/knowledge-base"; do
+    [ -n "$d" ] && [ -d "$d/.git" ] || continue
+    git -C "$d" diff --quiet -- projects/merge-desk/ledger.jsonl 2>/dev/null && return 0
+    # only ever touch the ledger; never sweep up someone else's work in progress
+    git -C "$d" add projects/merge-desk/ledger.jsonl 2>/dev/null || return 0
+    git -C "$d" -c core.hooksPath=.githooks commit -q \
+      -m "merge-desk: log ledger sync push" \
+      -- projects/merge-desk/ledger.jsonl 2>/dev/null || return 0
+    git -C "$d" push -q origin HEAD:refs/heads/main 2>/dev/null || true
+    return 0
+  done
+  return 0
+}
+
 # --- 3. fetch / rebase / push loop ---------------------------------------
 TRY=1
 while [ "$TRY" -le "$MAX_TRIES" ]; do
@@ -181,6 +202,7 @@ EOF
   if [ "$PUSH_RC" -eq 0 ]; then
     echo "merge-desk: pushed to $TARGET (try $TRY, $AHEAD commit(s))."
     ledger push_ok ",\"tries\":$TRY,\"commits\":$AHEAD"
+    ledger_sweep
     exit 0
   fi
   case "$PUSH_ERR" in
